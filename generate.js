@@ -1,5 +1,6 @@
 // start
 const fs = require("fs");
+const templates = require("./Templates/templates");
 
 const createFolderIfNotExists = (folderPath) => {
   if (!fs.existsSync(folderPath)) {
@@ -30,56 +31,80 @@ const appendToFile = (fileName, code) => {
   }
 };
 
+function appendContentToFile(filePath, contentToAdd, checkString) {
+  try {
+    const fileContent = fs.readFileSync(filePath, "utf-8");
+
+    if (fileContent.includes(checkString)) {
+      console.log(`Content already exists in the file. ${filePath}`);
+    } else {
+      fs.appendFileSync(filePath, contentToAdd);
+      console.log(`Content added to the file ${filePath}`);
+    }
+  } catch (err) {
+    console.error(`Error appending content to file: ${err.message}`);
+  }
+}
+
+function appendToFileMiddleware(filePath, checkString, statement) {
+  fs.readFile(filePath, "utf8", (err, data) => {
+    if (err) {
+      console.error(`Error reading ${filePath}: ${err.message}`);
+      return;
+    }
+    // Check if the import statement already exists
+    if (data?.includes(checkString)) {
+      console.log(`Import already exists in ${filePath}`);
+    } else {
+      // Append the import statement to the file
+      appendToFile(filePath, statement);
+    }
+  });
+}
+
 const reduxStoreDefault = (modelName) => {
   //index.js
-  const index = `import { createStore, applyMiddleware, compose } from "redux"
-  import createSagaMiddleware from "redux-saga"
-  
-  import rootReducer from "./reducers"
-  import rootSaga from "./sagas"
-  
-  const sagaMiddleware = createSagaMiddleware()
-  
-  const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
-  
-  const store = createStore(
-    rootReducer,
-    composeEnhancers(applyMiddleware(sagaMiddleware))
-  )
-  
-  sagaMiddleware.run(rootSaga)
-  
-  export default store
-  `;
-  createOrUpdateFile(`src/store/index.js`, index);
+  createOrUpdateFile(`src/store/index.js`, templates.reduxIndexTemplate);
 
   // actions.js
   modelName?.map((name) => {
-    const action = `\n//${name}
+    const filePath = "src/store/actions.js";
+    const checkString = `export * from "./${name?.toLowerCase()}/actions";`;
+    const statement = `\n//${name}
     export * from "./${name?.toLowerCase()}/actions"`;
-    return appendToFile(`src/store/actions.js`, action);
+
+    if (fs.existsSync(filePath)) {
+      appendToFileMiddleware(filePath, checkString, statement);
+    } else {
+      fs.writeFileSync(filePath, statement);
+    }
   });
 
   // reducers.js
   modelName?.map((name) => {
-    const importLine = `//${name?.toLowerCase()}\nimport ${name} from "${name?.toLowerCase()}/reducer"`;
     const filePath = "src/store/reducers.js";
+    const importLine = `//${name?.toLowerCase()}\nimport ${name} from "./${name?.toLowerCase()}/reducer";`;
+    const checkString = `import ${name} from "./${name?.toLowerCase()}/reducer";`;
 
     if (fs.existsSync(filePath)) {
       let fileContents = fs.readFileSync(filePath, "utf-8");
 
-      if (fileContents.includes("export default rootReducer")) {
-        fileContents = fileContents.replace(
-          /export default rootReducer = combineReducers\({/,
-          `${importLine}\n\nexport default rootReducer = combineReducers({\n  ${name},`
-        );
-
-        fs.writeFileSync(filePath, fileContents);
+      if (fileContents.includes(checkString)) {
+        console.log(`${checkString} already exists in ${filePath}`);
       } else {
-        fs.writeFileSync(
-          filePath,
-          `import { combineReducers } from 'redux';\n${importLine}\n\nexport default rootReducer = combineReducers({\n  ${name}\n});\n`
-        );
+        if (fileContents.includes("export default rootReducer")) {
+          fileContents = fileContents.replace(
+            /export default rootReducer = combineReducers\({/,
+            `${importLine}\n\nexport default rootReducer = combineReducers({\n  ${name},`
+          );
+
+          fs.writeFileSync(filePath, fileContents);
+        } else {
+          fs.writeFileSync(
+            filePath,
+            `import { combineReducers } from 'redux';\n${importLine}\n\nexport default rootReducer = combineReducers({\n  ${name}\n});\n`
+          );
+        }
       }
     } else {
       fs.writeFileSync(
@@ -91,26 +116,30 @@ const reduxStoreDefault = (modelName) => {
 
   // sagas.js
   modelName?.map((name) => {
-    const importLine = `import ${name}Saga from "${name?.toLowerCase()}/saga"`;
     const filePath = "src/store/sagas.js";
+    const importLine = `import ${name}Saga from "./${name?.toLowerCase()}/saga"`;
 
     if (fs.existsSync(filePath)) {
       let fileContents = fs.readFileSync(filePath, "utf-8");
 
-      if (fileContents.includes("yield all([")) {
-        fileContents = fileContents
-          .replace(
-            "export default function* rootSaga() {",
-            `${importLine}\n\nexport default function* rootSaga() {`
-          )
-          .replace("yield all([", `yield all([\nfork(${name}Saga),`);
-
-        fs.writeFileSync(filePath, fileContents);
+      if (fileContents?.includes(importLine)) {
+        console.log(`${importLine} already exists in ${filePath}`);
       } else {
-        fs.writeFileSync(
-          filePath,
-          `import { all, fork } from "redux-saga/effects";\n${importLine}\n\nexport default function* rootSaga() {\nyield all([\n fork(${name}Saga),\n ])\n}`
-        );
+        if (fileContents?.includes("yield all([")) {
+          fileContents = fileContents
+            .replace(
+              "export default function* rootSaga() {",
+              `${importLine}\n\nexport default function* rootSaga() {`
+            )
+            .replace("yield all([", `yield all([\nfork(${name}Saga),`);
+
+          fs.writeFileSync(filePath, fileContents);
+        } else {
+          fs.writeFileSync(
+            filePath,
+            `import { all, fork } from "redux-saga/effects";\n${importLine}\n\nexport default function* rootSaga() {\nyield all([\n fork(${name}Saga),\n ])\n}`
+          );
+        }
       }
     } else {
       fs.writeFileSync(
@@ -125,32 +154,168 @@ const reduxStore = (modelName) => {
   reduxStoreDefault(modelName);
 };
 
+const actionTypes = (modelName, folderName) => {
+  if (folderName) {
+    const filePath = `src/store/${folderName?.toLowerCase()}/actionTypes.js`;
+    const checkString = `/* ${modelName}s - This line cannot be edited or removed */`;
+
+    modelName?.map((name) => {
+      appendContentToFile(
+        filePath,
+        templates.actionTypesTemplate(name),
+        checkString
+      );
+    });
+  } else {
+    modelName?.map((name) => {
+      const path = `src/store/${name?.toLowerCase()}/actionTypes.js`;
+      createOrUpdateFile(path, templates.actionTypesTemplate(name));
+    });
+  }
+};
+
+const action = (modelName, folderName) => {
+  if (folderName) {
+    const filePath = `src/store/${folderName?.toLowerCase()}/action.js`;
+    const checkString = `// ${modelName} - This line cannot be edited or removed`;
+
+    modelName?.map((name) => {
+      appendContentToFile(
+        filePath,
+        templates.actionCreatorsTemplate(name),
+        checkString
+      );
+    });
+  } else {
+    modelName?.map((name) => {
+      const path = `src/store/${name?.toLowerCase()}/action.js`;
+      createOrUpdateFile(path, templates.actionCreatorsTemplate(name));
+    });
+  }
+};
+
+const reducer = (modelName, folderName) => {
+  if (folderName) {
+    const filePath = `src/store/${folderName?.toLowerCase()}/reducer.js`;
+    const checkString = `// ${modelName} - This line cannot be edited or removed`;
+
+    modelName?.map((name) => {
+      try {
+        let fileContent = fs.readFileSync(filePath, "utf-8");
+
+        if (fileContent?.includes(checkString)) {
+          console.log(`Content already exists in the file. ${filePath}`);
+        } else {
+          const { importSection, reducerSection, stateSection } =
+            templates.reducerTemplateBundle(name);
+
+          const updates = [
+            {
+              pattern: /} from "\.\/actionTypes";/,
+              replacement: `${importSection}\n} from "./actionTypes";`,
+            },
+            {
+              pattern: /const INIT_STATE = {/,
+              replacement: `const INIT_STATE = {\n${stateSection}`,
+            },
+            {
+              pattern: /default:/,
+              replacement: `\n${reducerSection} \ndefault:`,
+            },
+          ];
+
+          for (const { pattern, replacement } of updates) {
+            fileContent = fileContent.replace(pattern, replacement);
+          }
+
+          fs.writeFileSync(filePath, fileContent);
+          console.log(`Content added to the file ${filePath}`);
+        }
+      } catch (err) {
+        console.error(`Error appending content to file: ${err.message}`);
+      }
+    });
+  } else {
+    modelName?.map((name) => {
+      const path = `src/store/${name?.toLowerCase()}/reducer.js`;
+      createOrUpdateFile(path, templates.reducerTemplate(name));
+    });
+  }
+};
+const saga = (modelName, folderName) => {
+  if (folderName) {
+    const filePath = `src/store/${folderName?.toLowerCase()}/saga.js`;
+    const checkString = `// ${modelName} - This line cannot be edited or removed`;
+
+    modelName?.map((name) => {
+      try {
+        let fileContent = fs.readFileSync(filePath, "utf-8");
+
+        if (fileContent?.includes(checkString)) {
+          console.log(`Content already exists in the file. ${filePath}`);
+        } else {
+          const {
+            importSection,
+            importActionSection,
+            sagaContent,
+            sagaExport,
+          } = templates.sagaTemplateBundle(name);
+
+          const updates = [
+            {
+              pattern: /} from "\.\/actionTypes";/,
+              replacement: `${importSection}\n} from "./actionTypes";`,
+            },
+            {
+              pattern: /} from "\.\/actions";/,
+              replacement: `${importActionSection}\n} from "./actions";`,
+            },
+            {
+              pattern: `function* ${folderName}Saga() {`,
+              replacement: `${sagaContent} \nfunction* ${folderName}Saga() { \n ${sagaExport}`,
+            },
+          ];
+
+          for (const { pattern, replacement } of updates) {
+            fileContent = fileContent.replace(pattern, replacement);
+          }
+
+          fs.writeFileSync(filePath, fileContent);
+          console.log(`Content added to the file ${filePath}`);
+        }
+      } catch (err) {
+        console.error(`Error appending content to file: ${err.message}`);
+      }
+    });
+  } else {
+    modelName?.map((name) => {
+      const path = `src/store/${name?.toLowerCase()}/saga.js`;
+      createOrUpdateFile(path, templates.sagaTemplate(name));
+    });
+  }
+};
+
 // package handler
-function generateFiles(modelName) {
-  // Create folders
+function generateFiles(modelName, isInSameFolder, folderName) {
   createFolderIfNotExists("src");
   createFolderIfNotExists("src/store");
-  createFolderIfNotExists(`src/store/${modelName}`);
 
-  reduxStore(modelName);
+  if (isInSameFolder === "inside") {
+    actionTypes(modelName, folderName);
+    action(modelName, folderName);
+    reducer(modelName, folderName);
+    saga(modelName, folderName);
+  } else {
+    createFolderIfNotExists(`src/store/${modelName[0]?.toLowerCase()}`);
+    reduxStore(modelName);
 
-  console.log("Happy Hacking! 🔥 Osperb");
+    actionTypes(modelName);
+    action(modelName);
+    reducer(modelName);
+    saga(modelName);
+  }
+
+  console.log("Happy Hacking! 🔥 by AM - Osperb");
 }
 
 module.exports = { generateFiles };
-
-// const createOrUpdateFile = (filePath, newContent) => {
-//   let existingContent = "";
-
-//   if (fs.existsSync(filePath)) {
-//     existingContent = fs.readFileSync(filePath, "utf8");
-//   }
-
-//   if (existingContent !== newContent) {
-//     const updatedContent = existingContent + "\n" + newContent;
-//     fs.writeFileSync(filePath, updatedContent);
-//     console.log(`File updated: ${filePath}`);
-//   } else {
-//     console.log(`File content is already up-to-date: ${filePath}`);
-//   }
-// };
