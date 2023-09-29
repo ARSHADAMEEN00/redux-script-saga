@@ -4,39 +4,31 @@ Redux-Toolkit-Script is a package that generates code files for async API calls 
 
 ## Installation
 
-To install Redux-Script, use the following command:
+To install Redux-Script-Saga, use the following command:
 
 ## shell
 
 ```shell
-npm install -g redux-script
+npm install -g redux-script-saga
 ```
 
 ## Usage
 
 1.  simply run the following command command:
     ```shell
-    redux-script all <api_name>
+    redux-script-saga Model_name
     ```
-    This will execute the "index.js" file provided by Redux-Script, generating the necessary code files for async API calls and Redux store slices based on the titles you provide.
+    This will execute the "index.js" file provided by Redux-Script-Saga, generating the necessary code files for async API calls and Redux store slices based on the titles you provide.
 
-# Run both functions
+## you can also add the CURD inside the folder that already exist
 
-redux-script --all model1,model2,model3
-
-# Run asyncApis only
-
-redux-script --api model1,model2,model3
-
-# Run reduxStore only
-
-redux-script --store model1,model2,model3
+redux-script-saga Model_name inside folder_name
 
 ```Example
- redux-script all 'Products'
+ redux-script-saga Cart inside User
 ```
 
-Make sure you have the required dependencies and configurations in place before running the Redux-Script command. Refer to the documentation or examples provided by Redux-Script for more details.
+Make sure you have the required dependencies and configurations in place before running the Redux-Script-Saga command. Refer to the documentation or examples provided by Redux-Script-Saga for more details.
 
 <hr />
 
@@ -46,11 +38,11 @@ This project is licensed under the Apache-2.0 License. See the LICENSE file for 
 
 ### Issues
 
-If you encounter any issues or have any suggestions for improvement, please report them on the [issue tracker](https://github.com/ARSHADAMEEN00/redux-script#readme)
+If you encounter any issues or have any suggestions for improvement, please report them on the [issue tracker](https://github.com/ARSHADAMEEN00/redux-script-saga#readme)
 
 ### Contributing
 
-Contributions are welcome! If you would like to contribute to Redux-Script, please follow the guidelines in the [CONTRIBUTING](https://github.com/ARSHADAMEEN00/redux-script#readme) file.
+Contributions are welcome! If you would like to contribute to Redux-Script-Saga, please follow the guidelines in the [CONTRIBUTING](https://github.com/ARSHADAMEEN00/redux-script-saga#readme) file.
 
 ### Acknowledgements
 
@@ -58,8 +50,8 @@ Special thanks to Ameen Arshad Nediya for creating and maintaining Redux-Script.
 
 ### Additional Resources
 
-. [Documentation](https://www.npmjs.com/package/redux-script?activeTab=readme)
-. [GitHub Repository](https://github.com/ARSHADAMEEN00/redux-script)
+. [Documentation](https://www.npmjs.com/package/redux-script-saga?activeTab=readme)
+. [GitHub Repository](https://github.com/ARSHADAMEEN00/redux-script-saga)
 
 <hr />
 
