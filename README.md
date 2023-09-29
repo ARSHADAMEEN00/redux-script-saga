@@ -1,7 +1,5 @@
 # [Redux-Script-Saga](https://www.npmjs.com/package/redux-script?activeTab=readme)
 
-# redux-script-saga
-
 **redux-script-saga** is a tool for generating code files for async API calls and Redux store slices based on provided titles. It simplifies the process of automating code generation, especially when working with Redux and async API calls.
 
 ## Installation
