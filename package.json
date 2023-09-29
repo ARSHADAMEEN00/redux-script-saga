@@ -1,5 +1,5 @@
 {
-  "name": "redux-script",
+  "name": "redux-script-saga",
   "version": "1.0.2",
   "description": "to generate code files for async API calls and Redux store slices based on the provided titles,The first argument specifies the desired action",
   "main": "index.js",
@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "bin": {
-    "redux-script": "index.js"
+    "redux-script-saga": "index.js"
   },
   "dependencies": {
     "fs": "0.0.1-security"

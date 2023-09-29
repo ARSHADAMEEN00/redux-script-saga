@@ -1,31 +1,47 @@
-# [Redux-Script](https://www.npmjs.com/package/redux-script?activeTab=readme)
+# [Redux-Script-Saga](https://www.npmjs.com/package/redux-script?activeTab=readme)
 
-Redux-Toolkit-Script is a package that generates code files for async API calls and Redux store slices based on the provided titles. It automates the process of creating Redux-related code, making it easier and more efficient to set up your Redux store.
+# redux-script-saga
+
+**redux-script-saga** is a tool for generating code files for async API calls and Redux store slices based on provided titles. It simplifies the process of automating code generation, especially when working with Redux and async API calls.
 
 ## Installation
 
-To install Redux-Script-Saga, use the following command:
+You can install **redux-script-saga** globally or locally within your project.
 
-## shell
+### Global Installation
 
-```shell
+To install **redux-script-saga** globally, use the following command:
+
+```bash
 npm install -g redux-script-saga
+```
+
+Local Installation
+To install redux-script-saga locally within your project, use the following command:
+
+```bash
+npm install redux-script-saga
 ```
 
 ## Usage
 
-1.  simply run the following command command:
-    ```shell
-    redux-script-saga Model_name
-    ```
-    This will execute the "index.js" file provided by Redux-Script-Saga, generating the necessary code files for async API calls and Redux store slices based on the titles you provide.
+1. redux-script-saga [action] [options] <br />
 
-## you can also add the CURD inside the folder that already exist
+   [action] (required): Specify the desired action. This can be the title of the code files you want to generate.
+   [options] (optional): You can provide additional options as needed.
 
-redux-script-saga Model_name inside folder_name
+### Examples
 
-```Example
- redux-script-saga Cart inside User
+Generate code files for a product:
+
+```bash
+redux-script-saga Product
+```
+
+Generate code files for a user inside a specific folder:
+
+```bash
+redux-script-saga User inside myFolder
 ```
 
 Make sure you have the required dependencies and configurations in place before running the Redux-Script-Saga command. Refer to the documentation or examples provided by Redux-Script-Saga for more details.
