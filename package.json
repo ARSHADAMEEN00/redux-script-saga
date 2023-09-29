@@ -1,6 +1,6 @@
 {
   "name": "redux-script-saga",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "to generate code files for async API calls and Redux store slices based on the provided titles,The first argument specifies the desired action",
   "main": "index.js",
   "scripts": {
