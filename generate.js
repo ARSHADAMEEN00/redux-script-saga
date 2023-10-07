@@ -176,7 +176,7 @@ const actionTypes = (modelName, folderName) => {
 
 const action = (modelName, folderName) => {
   if (folderName) {
-    const filePath = `src/store/${folderName?.toLowerCase()}/action.js`;
+    const filePath = `src/store/${folderName?.toLowerCase()}/actions.js`;
     const checkString = `// ${modelName} - This line cannot be edited or removed`;
 
     modelName?.map((name) => {
@@ -188,7 +188,7 @@ const action = (modelName, folderName) => {
     });
   } else {
     modelName?.map((name) => {
-      const path = `src/store/${name?.toLowerCase()}/action.js`;
+      const path = `src/store/${name?.toLowerCase()}/actions.js`;
       createOrUpdateFile(path, templates.actionCreatorsTemplate(name));
     });
   }
