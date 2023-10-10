@@ -73,7 +73,7 @@ const actionCreatorsTemplate = (name) => `
   
   export const get${name}sSuccess = (${name?.toLowerCase()}s) => ({
     type: GET_${name?.toUpperCase()}S_SUCCESS,
-    payload: ${name}s,
+    payload: ${name?.toLowerCase()}s,
   });
   
   export const get${name}sFail = (error) => ({
@@ -83,12 +83,12 @@ const actionCreatorsTemplate = (name) => `
   
   export const get${name}Details = (${name?.toLowerCase()}Id) => ({
     type: GET_${name?.toUpperCase()}_DETAILS,
-    payload: ${name}Id,
+    payload: ${name?.toLowerCase()}Id,
   });
   
   export const get${name}DetailsSuccess = (${name?.toLowerCase()}Details) => ({
     type: GET_${name?.toUpperCase()}_DETAILS_SUCCESS,
-    payload: ${name}Details,
+    payload: ${name?.toLowerCase()}Details,
   });
   
   export const get${name}DetailsFail = (error) => ({
@@ -98,12 +98,12 @@ const actionCreatorsTemplate = (name) => `
   
   export const create${name} = (${name?.toLowerCase()}, history) => ({
     type: CREATE_${name?.toUpperCase()},
-    payload: { ${name}, history },
+    payload: { ${name?.toLowerCase()}, history },
   });
   
   export const create${name}Success = (${name?.toLowerCase()}) => ({
     type: CREATE_${name?.toUpperCase()}_SUCCESS,
-    payload: ${name},
+    payload: ${name?.toLowerCase()},
   });
   
   export const create${name}Fail = (error) => ({
@@ -113,17 +113,17 @@ const actionCreatorsTemplate = (name) => `
   
   export const get${name}Detail = (${name?.toLowerCase()}Id) => ({
     type: GET_${name?.toUpperCase()}_DETAILS,
-    payload: ${name}Id,
+    payload: ${name?.toLowerCase()}Id,
   });
   
-  export const update${name} = (${name}, ${name?.toLowerCase()}Id, history) => ({
+  export const update${name} = (${name?.toLowerCase()}, ${name?.toLowerCase()}Id, history) => ({
     type: UPDATE_${name?.toUpperCase()},
-    payload: { ${name}, ${name}Id, history },
+    payload: { ${name?.toLowerCase()}, ${name?.toLowerCase()}Id, history },
   });
   
   export const update${name}Success = (${name?.toLowerCase()}) => ({
     type: UPDATE_${name?.toUpperCase()}_SUCCESS,
-    payload: ${name},
+    payload: ${name?.toLowerCase()},
   });
   
   export const update${name}Fail = (error) => ({
@@ -133,12 +133,12 @@ const actionCreatorsTemplate = (name) => `
   
   export const delete${name} = (${name?.toLowerCase()}Id, history) => ({
     type: DELETE_${name?.toUpperCase()},
-    payload: { ${name}Id, history },
+    payload: { ${name?.toLowerCase()}Id, history },
   });
   
   export const delete${name}Success = (${name?.toLowerCase()}) => ({
     type: DELETE_${name?.toUpperCase()}_SUCCESS,
-    payload: ${name},
+    payload: ${name?.toLowerCase()},
   });
   
   export const delete${name}Fail = (error) => ({
