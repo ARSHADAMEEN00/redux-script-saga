@@ -62,36 +62,20 @@ function appendToFileMiddleware(filePath, checkString, statement) {
   });
 }
 
-const reduxStoreDefault = (modelName) => {
-  //index.js
-  createOrUpdateFile(`src/store/index.js`, templates.reduxIndexTemplate);
-
-  // actions.js
+function updateReducers(modelName) {
   modelName?.map((name) => {
-    const filePath = "src/store/actions.js";
-    const checkString = `export * from "./${name?.toLowerCase()}/actions";`;
-    const statement = `\n//${name}
-    export * from "./${name?.toLowerCase()}/actions"`;
+    const filePath = `src/store/reducers.js`;
+    const importLine = `//${name?.toLowerCase()}\nimport ${name} from "./${name?.toLowerCase()}/reducer"`;
+    const checkString = `import ${name} from "./${name?.toLowerCase()}/reducer"`;
 
     if (fs.existsSync(filePath)) {
-      appendToFileMiddleware(filePath, checkString, statement);
-    } else {
-      fs.writeFileSync(filePath, statement);
-    }
-  });
-
-  // reducers.js
-  modelName?.map((name) => {
-    const filePath = "src/store/reducers.js";
-    const importLine = `//${name?.toLowerCase()}\nimport ${name} from "./${name?.toLowerCase()}/reducer";`;
-    const checkString = `import ${name} from "./${name?.toLowerCase()}/reducer";`;
-
-    if (fs.existsSync(filePath)) {
+      console.log(`Data: OK`);
       let fileContents = fs.readFileSync(filePath, "utf-8");
 
-      if (fileContents.includes(checkString)) {
+      if (fileContents?.includes(checkString)) {
         console.log(`${checkString} already exists in ${filePath}`);
       } else {
+        console.log(`Creating a new import for ${name} in ${filePath}`);
         if (fileContents.includes("export default rootReducer")) {
           fileContents = fileContents.replace(
             /export default rootReducer = combineReducers\({/,
@@ -107,14 +91,31 @@ const reduxStoreDefault = (modelName) => {
         }
       }
     } else {
+      console.log(`Creating a new file: ${filePath}`);
       fs.writeFileSync(
         filePath,
         `import { combineReducers } from 'redux';\n${importLine}\n\nexport default rootReducer = combineReducers({\n  ${name}\n});\n`
       );
     }
   });
+}
 
-  // sagas.js
+function updateAction(modelName) {
+  modelName?.map((name) => {
+    const filePath = "src/store/actions.js";
+    const checkString = `export * from "./${name?.toLowerCase()}/actions";`;
+    const statement = `\n//${name}
+    export * from "./${name?.toLowerCase()}/actions"`;
+
+    if (fs.existsSync(filePath)) {
+      appendToFileMiddleware(filePath, checkString, statement);
+    } else {
+      fs.writeFileSync(filePath, statement);
+    }
+  });
+}
+
+function updateSaga(modelName) {
   modelName?.map((name) => {
     const filePath = "src/store/sagas.js";
     const importLine = `import ${name}Saga from "./${name?.toLowerCase()}/saga"`;
@@ -148,10 +149,13 @@ const reduxStoreDefault = (modelName) => {
       );
     }
   });
-};
+}
 
 const reduxStore = (modelName) => {
-  reduxStoreDefault(modelName);
+  createOrUpdateFile(`src/store/index.js`, templates?.reduxIndexTemplate);
+  updateReducers(modelName);
+  updateAction(modelName);
+  updateSaga(modelName);
 };
 
 const actionTypes = (modelName, folderName) => {
@@ -242,6 +246,7 @@ const reducer = (modelName, folderName) => {
     });
   }
 };
+
 const saga = (modelName, folderName) => {
   if (folderName) {
     const filePath = `src/store/${folderName?.toLowerCase()}/saga.js`;

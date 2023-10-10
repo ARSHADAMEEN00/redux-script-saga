@@ -71,7 +71,7 @@ const actionCreatorsTemplate = (name) => `
     payload: { page, sort, limit, searchText },
   });
   
-  export const get${name}sSuccess = (${name}s) => ({
+  export const get${name}sSuccess = (${name?.toLowerCase()}s) => ({
     type: GET_${name?.toUpperCase()}S_SUCCESS,
     payload: ${name}s,
   });
@@ -81,12 +81,12 @@ const actionCreatorsTemplate = (name) => `
     payload: error,
   });
   
-  export const get${name}Details = (${name}Id) => ({
+  export const get${name}Details = (${name?.toLowerCase()}Id) => ({
     type: GET_${name?.toUpperCase()}_DETAILS,
     payload: ${name}Id,
   });
   
-  export const get${name}DetailsSuccess = (${name}Details) => ({
+  export const get${name}DetailsSuccess = (${name?.toLowerCase()}Details) => ({
     type: GET_${name?.toUpperCase()}_DETAILS_SUCCESS,
     payload: ${name}Details,
   });
@@ -96,12 +96,12 @@ const actionCreatorsTemplate = (name) => `
     payload: error,
   });
   
-  export const create${name} = (${name}, history) => ({
+  export const create${name} = (${name?.toLowerCase()}, history) => ({
     type: CREATE_${name?.toUpperCase()},
     payload: { ${name}, history },
   });
   
-  export const create${name}Success = (${name}) => ({
+  export const create${name}Success = (${name?.toLowerCase()}) => ({
     type: CREATE_${name?.toUpperCase()}_SUCCESS,
     payload: ${name},
   });
@@ -111,17 +111,17 @@ const actionCreatorsTemplate = (name) => `
     payload: error,
   });
   
-  export const get${name}Detail = (${name}Id) => ({
+  export const get${name}Detail = (${name?.toLowerCase()}Id) => ({
     type: GET_${name?.toUpperCase()}_DETAILS,
     payload: ${name}Id,
   });
   
-  export const update${name} = (${name}, ${name}Id, history) => ({
+  export const update${name} = (${name}, ${name?.toLowerCase()}Id, history) => ({
     type: UPDATE_${name?.toUpperCase()},
     payload: { ${name}, ${name}Id, history },
   });
   
-  export const update${name}Success = (${name}) => ({
+  export const update${name}Success = (${name?.toLowerCase()}) => ({
     type: UPDATE_${name?.toUpperCase()}_SUCCESS,
     payload: ${name},
   });
@@ -131,12 +131,12 @@ const actionCreatorsTemplate = (name) => `
     payload: error,
   });
   
-  export const delete${name} = (${name}Id, history) => ({
+  export const delete${name} = (${name?.toLowerCase()}Id, history) => ({
     type: DELETE_${name?.toUpperCase()},
     payload: { ${name}Id, history },
   });
   
-  export const delete${name}Success = (${name}) => ({
+  export const delete${name}Success = (${name?.toLowerCase()}) => ({
     type: DELETE_${name?.toUpperCase()}_SUCCESS,
     payload: ${name},
   });
@@ -416,20 +416,20 @@ function get${name}sAPi({ page, sort, limit, searchText }) {
   );
 }
 
-const get${name}DetailsAPi = (${name}Id) => {
-  return get(\`/${name?.toLowerCase()}/admin/single/\${${name}Id}\`);
+const get${name}DetailsAPi = (${name?.toLowerCase()}Id) => {
+  return get(\`/${name?.toLowerCase()}/admin/single/\${${name?.toLowerCase()}Id}\`);
 };
 
 const create${name}Api = ({ ${name?.toLowerCase()} }) => {
   return post("/${name?.toLowerCase()}/admin/new", ${name?.toLowerCase()});
 };
 
-const update${name}Api = ({ ${name?.toLowerCase()}, ${name}Id }) => {
-  return ApiPut(\`/${name?.toLowerCase()}/admin/\${${name}Id}\`, ${name?.toLowerCase()});
+const update${name}Api = ({ ${name?.toLowerCase()}, ${name?.toLowerCase()}Id }) => {
+  return ApiPut(\`/${name?.toLowerCase()}/admin/\${${name?.toLowerCase()}Id}\`, ${name?.toLowerCase()});
 };
 
-const delete${name}Api = (${name}Id) => {
-  return del(\`/${name?.toLowerCase()}/admin/\${${name}Id}\`);
+const delete${name}Api = (${name?.toLowerCase()}Id) => {
+  return del(\`/${name?.toLowerCase()}/admin/\${${name?.toLowerCase()}Id}\`);
 }
 
 function* fetch${name}s({ payload }) {
@@ -441,9 +441,9 @@ function* fetch${name}s({ payload }) {
   }
 }
 
-function* fetch${name}Details({ payload: ${name}Id }) {
+function* fetch${name}Details({ payload: ${name?.toLowerCase()}Id }) {
   try {
-    const response = yield call(get${name}DetailsAPi, ${name}Id);
+    const response = yield call(get${name}DetailsAPi, ${name?.toLowerCase()}Id);
     yield put(get${name}DetailsSuccess(response));
   } catch (error) {
     yield put(get${name}DetailsFail(error));
