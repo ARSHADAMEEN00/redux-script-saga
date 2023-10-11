@@ -428,7 +428,7 @@ const update${name}Api = ({ ${name?.toLowerCase()}, ${name?.toLowerCase()}Id }) 
   return ApiPut(\`/${name?.toLowerCase()}/admin/\${${name?.toLowerCase()}Id}\`, ${name?.toLowerCase()});
 };
 
-const delete${name}Api = (${name?.toLowerCase()}Id) => {
+const delete${name}Api = ({ ${name?.toLowerCase()}Id }) => {
   return del(\`/${name?.toLowerCase()}/admin/\${${name?.toLowerCase()}Id}\`);
 }
 
@@ -516,7 +516,7 @@ function* onUpdate${name}({ payload }) {
   }
 }
 
-function* onDelete${name}({ ${name}Id, history }) {
+function* onDelete${name}({ payload }) {
   try {
     const response = yield call(delete${name}Api, ${name}Id);
     yield put(delete${name}Success(response));
@@ -525,7 +525,6 @@ function* onDelete${name}({ ${name}Id, history }) {
       message: "${name} Deleted Successfully!",
       title: "",
     });
-    history.goBack();
   } catch (error) {
     if (error?.response?.data?.message) {
       Notification({
